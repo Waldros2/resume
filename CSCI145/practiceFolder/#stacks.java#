@@ -1,0 +1,7 @@
+public class stacks{
+
+    int maxSize;
+    int[] array;
+    int currSize;
+
+ 
