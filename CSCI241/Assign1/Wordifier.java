@@ -94,7 +94,7 @@ public class Wordifier {
     //    - bigramCounts maps each bigram appearing in the data to the number of times it appears
 	public static void computeCounts(LinkedList<String> data, HashMap<String,Integer> bigramCounts ) {
 		for (int i = 0; i < data.size() - 1; i++){
-			incrementHashMap(bigramCounts, data.get(i)+data.get(i+1), 1);
+			incrementHashMap(bigramCounts, data.get(i)+" "+data.get(i+1), 1);
 
 		}
 		//System.out.println(bigramCounts);
@@ -118,15 +118,31 @@ public class Wordifier {
 		for(Integer number : values){
 			sum+= number;
 		}
-		Iterator it = bigramCounts.entrySet().iterator();
-		while(it.hasNext()){
+		for(String key : bigramCounts.keySet()){
+			Double value = (double) bigramCounts.get(key);
+			bigramProbs.put(key, value);
+			String left = Character.toString(key.charAt(0));
+			if(leftUnigramProbs.containsKey(left)){
+				leftUnigramProbs.put(left, leftUnigramProbs.get(left)+value);
+			}
+			else{
+				leftUnigramProbs.put(left, value);
+			}
+
 		}
+		helperHash(bigramProbs, sum);
+		helperHash(leftUnigramProbs, sum);
+		//System.out.println(bigramProbs);
+		System.out.println(bigramCounts);
+		System.out.println(leftUnigramProbs);
 		return;
 	}
-	private static hashMap translate(hashMap<String, Integer> data){
-		for (data.key() : data)
+	private static HashMap<String, Double> helperHash(HashMap<String, Double> map, int sum){
+		for(String key : map.keySet()){
+			map.put(key, map.get(key)/sum);
+		}
+		return map;
 	}
-
     // getScores
     // Preconditions:
     //    - bigramProbs maps bigrams to to their joint probability
@@ -164,8 +180,8 @@ public class Wordifier {
     //      all unique words appearing in the dictionary
 	public static HashSet<String> loadDictionary( String dictionaryFilename ) {
 		HashSet<String> dictionary = new HashSet<String>();
-		File file = new File(dictionaryFilename);
 		try{
+			File file = new File(dictionaryFilename);
 			Scanner sc = new Scanner (file);
 			while (sc.hasNext()){
 				String curr = sc.next();
