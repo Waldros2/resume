@@ -13,7 +13,7 @@
  *
  * PUT BOTH OF YOUR NAMES HERE
  * Scott Waldron
- * Cachi Lor
+ * Chachi Lor
  */
 
 import java.util.*;
@@ -28,7 +28,7 @@ public class Wordifier {
     // Postconditions:
     //  - A LinkedList<String> object is returned that contains
     //    all of the tokens in the input file, in order
-    // Notes:
+    // Notes:Double value = (double) bigramCounts.get(key);
     //  - If opening any file throws a FileNotFoundException, print to standard error:
     //        "Error: Unable to open file " + textFilename
     //        (where textFilename contains the name of the problem file)
@@ -66,7 +66,16 @@ public class Wordifier {
     //        3) the score of the bigram is >= probabilityThreshold
     //      Formatting note: keys in the returned HashSet should include a space between the two tokens in the bigram
 	public static HashSet<String> findNewWords( HashMap<String,Integer> bigramCounts, HashMap<String,Double> scores, int countThreshold, double probabilityThreshold ) {
-		return null;
+		HashSet<String> newWords = new HashSet<String>();
+		for(String key : scores.keySet()){
+			if(bigramCounts.get(key) >= countThreshold){
+				if(scores.get(key) >= probabilityThreshold){
+					newWords.add(key);
+				}
+			}
+		}
+		//System.out.println(newWords);
+		return newWords;
 	}
 
     // resegment
@@ -83,7 +92,32 @@ public class Wordifier {
     //      and the newWords contained the entries "B C" and "G H", then the returned list would have
     //         A BC D E F GH I
 	public static LinkedList<String> resegment( LinkedList<String> previousData, HashSet<String> newWords ) {
-		return null;
+		LinkedList<String> newList = new LinkedList<String>();
+		ListIterator<String> it = previousData.listIterator();
+		ListIterator<String> it2 = previousData.listIterator(1);
+		//System.out.println(previousData);
+		//System.out.println(newWords);
+		while (it.hasNext()){
+			if(it2.hasNext()){
+				String curr = it.next() + " " + it2.next();
+				String combine = curr.replace(" ", "");
+				String elseWord = curr.substring(0, curr.indexOf(" "));
+				if(newWords.contains(curr)){
+					newList.add(combine);
+					it.next();
+					it2.next();
+					
+				}else{
+					newList.add(elseWord);
+					
+				}
+			}else{
+				newList.add(it.next());
+				
+			}
+		}
+		System.out.println(newList);
+		return newList;
 	}
 
     // computeCounts
@@ -93,9 +127,10 @@ public class Wordifier {
     // Postconditions:
     //    - bigramCounts maps each bigram appearing in the data to the number of times it appears
 	public static void computeCounts(LinkedList<String> data, HashMap<String,Integer> bigramCounts ) {
-		for (int i = 0; i < data.size() - 1; i++){
-			incrementHashMap(bigramCounts, data.get(i)+" "+data.get(i+1), 1);
-
+		ListIterator<String> it = data.listIterator();
+		ListIterator<String> it2 = data.listIterator(1);
+		while (it2.hasNext()){
+			incrementHashMap(bigramCounts, it.next() + " " + it2.next(), 1);
 		}
 		//System.out.println(bigramCounts);
 		return;
@@ -113,31 +148,40 @@ public class Wordifier {
     //    - leftUnigramProbs maps words in the first position to their "marginal probability"
     //    - rightUnigramProbs maps words in the second position to their "marginal probability"
 	public static void convertCountsToProbabilities(HashMap<String,Integer> bigramCounts, HashMap<String,Double> bigramProbs, HashMap<String,Double> leftUnigramProbs, HashMap<String,Double> rightUnigramProbs ) {
-		int sum = 0;
+		double sum = 0;
 		Collection<Integer> values = bigramCounts.values();
 		for(Integer number : values){
 			sum+= number;
 		}
-		for(String key : bigramCounts.keySet()){
+		for(String key: bigramCounts.keySet()){
+			String left = "";
+			String right = "";
 			Double value = (double) bigramCounts.get(key);
+			left = key.substring(0, key.indexOf(" "));
+			right = key.substring(key.indexOf(" ")+1, key.length());
 			bigramProbs.put(key, value);
-			String left = Character.toString(key.charAt(0));
 			if(leftUnigramProbs.containsKey(left)){
 				leftUnigramProbs.put(left, leftUnigramProbs.get(left)+value);
-			}
-			else{
+			}else{
 				leftUnigramProbs.put(left, value);
 			}
-
+			if(rightUnigramProbs.containsKey(right)){
+				rightUnigramProbs.put(right, rightUnigramProbs.get(right)+value);
+			}else{
+				rightUnigramProbs.put(right, value);
+			}
 		}
 		helperHash(bigramProbs, sum);
 		helperHash(leftUnigramProbs, sum);
+		helperHash(rightUnigramProbs, sum);
 		//System.out.println(bigramProbs);
-		System.out.println(bigramCounts);
-		System.out.println(leftUnigramProbs);
+		//System.out.println(bigramCounts);
+		//System.out.println(leftUnigramProbs);
+		//System.out.println(rightUnigramProbs);
+		//System.out.println(sum);
 		return;
 	}
-	private static HashMap<String, Double> helperHash(HashMap<String, Double> map, int sum){
+	private static HashMap<String, Double> helperHash(HashMap<String, Double> map, double sum){
 		for(String key : map.keySet()){
 			map.put(key, map.get(key)/sum);
 		}
@@ -154,7 +198,17 @@ public class Wordifier {
     //      The above product is equal to P(w1,w2)/sqrt(P_L(w1)*P_R(w2)), which
     //      is the form you will want to use
 	public static HashMap<String,Double> getScores( HashMap<String,Double> bigramProbs, HashMap<String,Double> leftUnigramProbs, HashMap<String,Double> rightUnigramProbs ) {
-		return null;
+		HashMap<String,Double> scores = new HashMap<String,Double>();
+		for(String key: bigramProbs.keySet()){
+			String left = "";
+			String right = "";
+			left = key.substring(0, key.indexOf(" "));
+			right = key.substring(key.indexOf(" ")+1, key.length());
+			double prob = bigramProbs.get(key)/(Math.sqrt(leftUnigramProbs.get(left)*rightUnigramProbs.get(right)));
+			scores.put(key, prob);
+		}
+		//System.out.println(scores);
+		return scores;
 	}
 
     // getVocabulary
@@ -166,8 +220,9 @@ public class Wordifier {
 	public static HashMap<String,Integer> getVocabulary(LinkedList<String> data) {
 
 		HashMap<String, Integer> vocab = new HashMap<String, Integer>();
-		for (int i = 0; i<data.size(); i++){
-			incrementHashMap(vocab, data.get(i), 1);
+		ListIterator<String> it = data.listIterator();
+		while(it.hasNext()){
+			incrementHashMap(vocab, it.next(), 1);
 		}
 		return vocab;
 	}
@@ -178,7 +233,7 @@ public class Wordifier {
     // Postconditions:
     //    - A new HashSet is created and returned that contains
     //      all unique words appearing in the dictionary
-	public static HashSet<String> loadDictionary( String dictionaryFilename ) {
+	public static HashSet<String> loadDictionary(String dictionaryFilename ) {
 		HashSet<String> dictionary = new HashSet<String>();
 		try{
 			File file = new File(dictionaryFilename);
