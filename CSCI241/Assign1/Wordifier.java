@@ -22,7 +22,7 @@ import java.io.*;
 
 
 public class Wordifier {
-
+static int tokenCount=0;
     // Preconditions:
     //    - textFilename is the name of a plaintext input file
     // Postconditions:
@@ -74,7 +74,6 @@ public class Wordifier {
 				}
 			}
 		}
-		//System.out.println(newWords);
 		return newWords;
 	}
 
@@ -95,8 +94,7 @@ public class Wordifier {
 		LinkedList<String> newList = new LinkedList<String>();
 		ListIterator<String> it = previousData.listIterator();
 		ListIterator<String> it2 = previousData.listIterator(1);
-		//System.out.println(previousData);
-		//System.out.println(newWords);
+
 		while (it.hasNext()){
 			if(it2.hasNext()){
 				String curr = it.next() + " " + it2.next();
@@ -106,17 +104,16 @@ public class Wordifier {
 					newList.add(combine);
 					it.next();
 					it2.next();
-					
+
 				}else{
 					newList.add(elseWord);
-					
+
 				}
 			}else{
 				newList.add(it.next());
-				
+
 			}
 		}
-		System.out.println(newList);
 		return newList;
 	}
 
@@ -132,7 +129,7 @@ public class Wordifier {
 		while (it2.hasNext()){
 			incrementHashMap(bigramCounts, it.next() + " " + it2.next(), 1);
 		}
-		//System.out.println(bigramCounts);
+		tokenCount = data.size();
 		return;
 	}
 
@@ -174,11 +171,6 @@ public class Wordifier {
 		helperHash(bigramProbs, sum);
 		helperHash(leftUnigramProbs, sum);
 		helperHash(rightUnigramProbs, sum);
-		//System.out.println(bigramProbs);
-		//System.out.println(bigramCounts);
-		//System.out.println(leftUnigramProbs);
-		//System.out.println(rightUnigramProbs);
-		//System.out.println(sum);
 		return;
 	}
 	private static HashMap<String, Double> helperHash(HashMap<String, Double> map, double sum){
@@ -207,7 +199,6 @@ public class Wordifier {
 			double prob = bigramProbs.get(key)/(Math.sqrt(leftUnigramProbs.get(left)*rightUnigramProbs.get(right)));
 			scores.put(key, prob);
 		}
-		//System.out.println(scores);
 		return scores;
 	}
 
@@ -247,8 +238,6 @@ public class Wordifier {
 			System.out.println("Error: Unable to open file " + dictionaryFilename);
 			System.exit(1);
 		}
-		//System.out.println(dictionary);
-		//System.out.println("The dictionary has " + dictionary.size() + " elements");
 		return dictionary;
 	}
 
@@ -283,6 +272,28 @@ public class Wordifier {
 	// Notes:
     //    - See example output for formatting
 	public static void printNumWordsDiscovered( HashMap<String,Integer> vocab, HashSet<String> dictionary ) {
+		TreeMap<String, Integer> sorted = new TreeMap<String, Integer>();
+		int totalUnique = 0;
+		int total = 0;
+		sorted.putAll(vocab);
+		for(String key: sorted.keySet()){
+			if(dictionary.contains(key)){
+				totalUnique ++;
+				total += sorted.get(key);
+				System.out.println("Discovered " + key + " (count " + sorted.get(key) + ")");
+			}
+		}
+		double sum = (double) totalUnique;
+		double uniquePercent = 100.0*(sum/dictionary.size());
+		double totalsum = (double) total;
+		double totalPercent = 100.0*(totalsum/tokenCount);
+
+		totalPercent = Math.round(totalPercent*100);
+		totalPercent = totalPercent/100;
+		uniquePercent = Math.round(uniquePercent*100);
+		uniquePercent = uniquePercent/100;
+		System.out.println("Discovered " + totalUnique + " actual (unique) words out of " + dictionary.size() + " dictionary words" + " (" + uniquePercent + "%)");
+		System.out.println("Discovered " + total + " actual word tokens out of " + tokenCount + " total tokens " + "(" + totalPercent + "%)");
 		return;
 	}
 
