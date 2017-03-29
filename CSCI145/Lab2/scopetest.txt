@@ -1,0 +1,19 @@
+1.
+
+21 came from line #5 add(10, 11)
+
+81 came from line #6 add(num1, num2)
+
+141 came from line #7 add(num2, num3) because int num3 was redeclared as num3 = 100 in line #4
+
+100 came from line #8 System.out.println(num3) because we redeclared num3.
+
+2. 
+
+The scope of num3 declared at line 4 is within only that parameter from #3 to #9
+
+The scope of inputNum declared at line 10 is within only the parameter from #9 to #14
+
+3.
+
+I would delete line #4 and comment out line #12 so that we recieve the correct value for num3

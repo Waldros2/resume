@@ -48,7 +48,7 @@ public class Book{
 		this.isbn = isbn;
 		this.price = price;
 		this.stock = 0;
-		this.format = format; 
+	  this.format = format; 
 	}
 
    /*
