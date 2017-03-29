@@ -1,0 +1,22 @@
+1.	Scott Waldron
+  	Chachi Lor
+
+2.	Our program, as far as we both understand, runs perfectly smooth and matches but example output files for peterpan.txt using peterpan.dictionary. 
+
+3.	From our understanding, our program uses (for the most part) efficient methods and logic to complete the run through. We realized that using for loops to iterate our linked list would make our runtime 
+	astronomical. Instead we opted to use a mixture of for each loops and iterators. 
+
+4. 	The most challenging methods were convertCountstoProbabilites and Resegment. printNumofWordsDiscovered also required a little bit of thorough logic. convertCounts was difficult because not only did we
+	have to seperate the bigrams into unigrams of left and right, we had add the unigram values if they already existed in the hashmap. This was much easier for bigramProbs because it was a unique mapping. 
+	Resegment was very logically challenging due to the use of the two Listiterators and the while loop. It also required accurate logic from your previous methods to work correctly. We realized we were 
+	not able to grab the last token using our while loop so we resorted to more specific instruction. printNumofWordsDiscovered was difficult because of the organization of the ints and doubles. We also 
+	realized, without being passed the total token amount, we had to declare a global variable that would hold the amount of total tokens.
+
+5. 	We took the program method by method and used multiple print statements to gather what our lists, maps and sets contained. This way, it showed whether or not we were using correct and efficient logic.
+	Our test1.txt was a rather small text file so we had to test with very low thresholds. But even before using the threshold values, we could still observe what the program was doing using print
+	statements. 
+
+6.	After thorough testing on the peterpan.txt file, we've come to the conclusion that the best threshold for finding unique words is count = 2, and probability = .07. This led to find 15.59% unique words
+	in the file. As for finding the highest total number of words we used the values count = 2 and probabilty = .10. This led to find 46.25% words in the dictionary.  	 
+
+

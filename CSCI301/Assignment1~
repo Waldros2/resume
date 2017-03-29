@@ -1,0 +1,7 @@
+#lang racket
+
+(define iff
+  (lambda (value1 value2)
+    (cond
+      ((eqv? value1 value2)))))
+  

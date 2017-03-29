@@ -1,0 +1,51 @@
+Scott Waldron
+2/1/17
+
+
+3.66
+
+Consider the following source code, where NR and NC are macro expressions declared with #define that compute the dimensions of array A in terms of parameter n. This code computes the sum of the elements of column j of the array.
+
+1. long sum_col (long n, long A[NR(n)[NC(n)], long j) {
+2.   long i;
+3.   long result = 0;
+4.   for (i = 0; i < NR(n); i++)
+5.     result += A[i][j];
+6.   return result;
+7. }
+
+Assembly Code
+n in %rdi, A in %rsi, j in %rdx
+
+1. sum_col:
+2.  leaq	1(,%rdi,4), %r8		# 1 + 4n --> %r8     
+3.  leaq	(%rdi,%rdi,2), %rax	# n + 2n = 3n --> %rax
+4.  movq	%rax, %rdi 		# move 3n --> %rdi
+5.  testq	%rax, %rax   		# test 3n = 0
+6.  jle 	.L4			# jump L4 <= 0
+7.  salq	$3, %r8			# 8(1 + 4n) --> %r8
+8.  leaq	(%rsi,%rdx,8), %rcx	# A + 8j --> %rcx
+9.  movl	$0, %eax		# move 0 --> %eax
+10. movl 	$0, %edx		# move 0 --> %edx
+11. .L3:
+12. addq 	(%rcx), %rax		# A + 8j + 3n --> %rax
+13. addq	$1, %rdx 		# 1 + j --> %rdx
+14. addq	%r8, %rcx		# 8 + 32n + A + 8j --> %rcx
+15. cmpq	%rdi, %rdx		# 3n ?= 1 + j
+16. jne		.L3			# jump L3 3n /= 1 + j
+17. rep; 	ret			# return
+18. .L4:
+19. movl	$0, %eax		# move 0 --> %eax
+20. ret					# return
+
+Using my reverse engineering skills, I have determined the definitions of NR and NC to be the following:
+
+int NR(n){
+  return 8(1 + 4*n);
+}
+int NC(n){
+  return 3*n;
+}
+I have deduced this using the information given to us in the first part of assembly with line 2 and 3.
+
+

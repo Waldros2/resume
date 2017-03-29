@@ -33,6 +33,7 @@ static int tokenCount=0;
     //        "Error: Unable to open file " + textFilename
     //        (where textFilename contains the name of the problem file)
     //      and then exit with value 1 (i.e. System.exit(1))
+/*Loads the information from file into a linkedlist*/
 	public static LinkedList<String> loadSentences(String textFilename) {
 		LinkedList <String> words = new LinkedList <String>();
 		File file = new File(textFilename);
@@ -47,8 +48,6 @@ static int tokenCount=0;
 			System.out.println("Error: Unable to open file " + textFilename);
 			System.exit(1);
 		}
-		//System.out.println(words);
-	  //System.out.println("This list conatains " + words.size() + " tokens");
 		return words;
 	}
 
@@ -65,6 +64,7 @@ static int tokenCount=0;
     //        2) the count of the bigram is >= countThreshold
     //        3) the score of the bigram is >= probabilityThreshold
     //      Formatting note: keys in the returned HashSet should include a space between the two tokens in the bigram
+/*If our bigram passes the thresholds, we place it in a hashmap called newWords*/
 	public static HashSet<String> findNewWords( HashMap<String,Integer> bigramCounts, HashMap<String,Double> scores, int countThreshold, double probabilityThreshold ) {
 		HashSet<String> newWords = new HashSet<String>();
 		for(String key : scores.keySet()){
@@ -90,6 +90,7 @@ static int tokenCount=0;
     //         A B C D E F G H I
     //      and the newWords contained the entries "B C" and "G H", then the returned list would have
     //         A BC D E F GH I
+/*We resegment the linkedlist by removing the space between all bigrams that are in newWords*/
 	public static LinkedList<String> resegment( LinkedList<String> previousData, HashSet<String> newWords ) {
 		LinkedList<String> newList = new LinkedList<String>();
 		ListIterator<String> it = previousData.listIterator();
@@ -114,6 +115,7 @@ static int tokenCount=0;
 
 			}
 		}
+		System.out.println(newList);
 		return newList;
 	}
 
@@ -123,6 +125,7 @@ static int tokenCount=0;
     //    - bigramCounts is an empty HashMap that has already been created
     // Postconditions:
     //    - bigramCounts maps each bigram appearing in the data to the number of times it appears
+/*We map each bigram to how many times in it appears in the linkedlist*/
 	public static void computeCounts(LinkedList<String> data, HashMap<String,Integer> bigramCounts ) {
 		ListIterator<String> it = data.listIterator();
 		ListIterator<String> it2 = data.listIterator(1);
@@ -144,6 +147,7 @@ static int tokenCount=0;
     //        (where the joint probability of a bigram is the # times it appears over the total # bigrams)
     //    - leftUnigramProbs maps words in the first position to their "marginal probability"
     //    - rightUnigramProbs maps words in the second position to their "marginal probability"
+
 	public static void convertCountsToProbabilities(HashMap<String,Integer> bigramCounts, HashMap<String,Double> bigramProbs, HashMap<String,Double> leftUnigramProbs, HashMap<String,Double> rightUnigramProbs ) {
 		double sum = 0;
 		Collection<Integer> values = bigramCounts.values();
@@ -189,6 +193,7 @@ static int tokenCount=0;
     //      their "bigram product scores", defined to be P(w1|w2)P(w2|w1)
     //      The above product is equal to P(w1,w2)/sqrt(P_L(w1)*P_R(w2)), which
     //      is the form you will want to use
+/*This is where we take 3 hashmaps and convert them into one using the formula stated above*/
 	public static HashMap<String,Double> getScores( HashMap<String,Double> bigramProbs, HashMap<String,Double> leftUnigramProbs, HashMap<String,Double> rightUnigramProbs ) {
 		HashMap<String,Double> scores = new HashMap<String,Double>();
 		for(String key: bigramProbs.keySet()){
@@ -208,6 +213,7 @@ static int tokenCount=0;
     // Postconditions:
     //    - A new HashMap is created and returned that maps words
     //      to the number of times they appear in the data
+/*Maps number of times a specific token appears in the linkedlist*/
 	public static HashMap<String,Integer> getVocabulary(LinkedList<String> data) {
 
 		HashMap<String, Integer> vocab = new HashMap<String, Integer>();
@@ -224,6 +230,7 @@ static int tokenCount=0;
     // Postconditions:
     //    - A new HashSet is created and returned that contains
     //      all unique words appearing in the dictionary
+/*Reads a file into a hashmap where we can use it later as a dictionary*/
 	public static HashSet<String> loadDictionary(String dictionaryFilename ) {
 		HashSet<String> dictionary = new HashSet<String>();
 		try{
@@ -243,7 +250,7 @@ static int tokenCount=0;
 
     // incrementHashMap
     // Preconditions:
-    //  - map is a non-null HashMap
+
     //  - key is a key that may or may not be in map
     //  - amount is the amount that you would like to increment key's value by
     // Postconditions:
@@ -271,6 +278,7 @@ static int tokenCount=0;
     //    - Prints the total of words in vocab (weighted by their count) that are also in dictionary
 	// Notes:
     //    - See example output for formatting
+/*final function that gives statistics about the data*/
 	public static void printNumWordsDiscovered( HashMap<String,Integer> vocab, HashSet<String> dictionary ) {
 		TreeMap<String, Integer> sorted = new TreeMap<String, Integer>();
 		int totalUnique = 0;

@@ -1,0 +1,7 @@
+Tom,M,37
+Harry,M,53
+George,M,17
+Mary,F,15
+Gary,M,16
+Laurene,F,38
+Gertrude,F,45

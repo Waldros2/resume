@@ -1,0 +1,64 @@
+Scott Waldron
+1/19/17
+wk3Homework
+
+2.85 
+*----------------------*
+Given a floating-point format with a k-bit exponent and an n-bit fraction, write formulas for the exponent E, the significand M, the fraction f, and the value V for the quantities that follow. In addition, describe the bit representation.
+
+A. The number 7.0
+
+V = 7.0 x 10^0 = 111 x 2^0 = 1.11 x 2^2 = M x 2^E
+M = 1.11 w/ E = 2
+E = 2
+frac = .11 Since E > 0, implied 1.
+bit-length = k + n + 1
+bit-representation = 0 1000...1 11000...000
+
+B. The largest odd integer that can be represented exactly
+
+V = M x 2^E = (1 + frac) x 2^k-2-bias
+M = 1 + ∑(1/2^n) n = 1 to n = n
+E = 254 - bias = 254 - 127 = 127
+frac = ∑(1/2^n) n = 1 to n = n
+bit-length = k + n + 1
+bit-represenation = 0 1111...1110 111...111
+
+C. The reciprocal of the smallest positive normalized value
+
+V = M x 2^E = (1 +frac) x 2^k-2-bias
+M = 1.0
+E = 126 
+frac = 0
+bit-length = k + n + 1
+bit-representation = 0 111...101 000...000
+
+2.89
+*----------------------*
+We are running programs on a machine where values of type int have a 32-bit two's-complement represenation. Values of type float use the 32-bit IEEE format, and values of type double wuse the 64-bit IEEE format. We generate arbitrary integer values x, y and z, and convert them to values of type double.
+
+A. (float) x == (float) dx ---> Always return 1 because x is a int and we are casting to a float of same size and casting a float to a double will truncate the double which already had the same precision as the int and float.
+
+B. dx - dy == (double) (x - y) ---> Not always return 1. Suppose x = Tmin and y = Tmax will cause overflow and won't be congruent with dx - dy.
+
+C. (dx + dy) + dz == dx + (dy + dz) ---> Always return 1. The doubles in the problem are cast from integers with no frac portion alloted so no rounding necessary. 
+
+D. (dx * dy) * dz == dx * (dy * dz) ---> Always return 1. If we cast ints into doubles, even if x, y, z = TMAX, we still have the capacity to represent the data without rounding necessary. 
+
+E. dx / dx == dz / dz ---> Not always return 1. Consider int x = 0 and dx = 0.0. Then 0/0 = NaN
+
+2.90
+*----------------*
+Fill in the code
+
+float fpwr2(int x){
+
+  /* Result exponent and fraction */
+  unsigned exp, frac;
+  unsigned u;
+
+  if (x <  ){
+    /* Too small. Return 0.0 */
+    exp = ;
+    frac = ;
+  }

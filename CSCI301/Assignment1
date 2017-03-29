@@ -28,7 +28,18 @@
 ;Problem4
 (define symmetric-difference
   (lambda (lat1 lat2)
-    (set-union (difference lat2 lat1) (difference lat1 lat2))))
+    (cond
+      ((null? lat1) (cond
+                      ((null? lat2)(quote()))
+                      (else
+                       (cons (car lat2)(symmetric-difference lat1 (cdr lat2))))))
+      ((null? lat2) (cond
+                      ((null? lat1)(quote()))
+                      (else
+                       (cons (car lat1)(symmetric-difference (cdr lat1) lat2 )))))
+      ((member (car lat1) lat2) (symmetric-difference (rember(car lat1) lat2) (cdr lat1)))
+      (else
+       (cons (car lat1) (symmetric-difference (cdr lat1) lat2))))))
 
 ;Problem5
 (define stem
