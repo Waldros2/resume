@@ -3,6 +3,8 @@
  *   Sept 21, 2000,  Phil Nelson
  *   Modified April 8, 2001 
  *   Modified January 6, 2003
+ *   
+ *   Project of: Scott Waldron
  *
  */
 
@@ -84,7 +86,9 @@ char ** arg_parse(char *line){
   int i = 0;
   int argc = 0;
   while (line[i] != NULL){
-    if (line[i] == " "){
+    if (line[i] != " "){
       argc++;
       while (line[i] != " "){
 	i++;
+      }
+    }
