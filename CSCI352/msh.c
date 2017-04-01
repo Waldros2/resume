@@ -24,12 +24,12 @@
 /* Prototypes */
 
 void processline (char *line);
+char ** arg_parse (char *line);
 
 /* Shell main */
 
-int
-main (void)
-{
+int main (void){
+    
     char   buffer [LINELEN];
     int    len;
 
@@ -56,14 +56,62 @@ main (void)
     return 0;		/* Also known as exit (0); */
 }
 
+char ** arg_parse(char *line){
+  
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int argc = 0;
+  
+  while (line[i] != '\0'){
+    if (line[i] == ' '){
+      i++;
+    }
+    else{
+      argc++;
+      while(line[i] != ' '){
+	if (line[i] == '\0')
+	  break;
+	else
+	  i++;
+     }
+    }
+  }
+  char **argv = malloc((argc+1) * sizeof(char*));
+  
+  while (line[j] != '\0'){
+    if (line[j] == ' ')
+      j++;
+    else{
+      argv[k] = &line[j];
+      k++;
+      while(line[j] != ' '){
+	if (line[j] == '\0'){
+	  argv[k+1] = '\0';
+	  break; 
+	}
+	else{
+	  j++;
+	}
+      }
+      line[j] = '\0';	
+    }
+  }
+  printf("%d\n", argc);
 
-void processline (char *line)
-{
+  return argv;
+  
+}
+   
+void processline (char *line){
+    
     pid_t  cpid;
     int    status;
     
+    /* Parse the line into seperate fields */
+    char **argv = arg_parse(line);
+
     /* Start a new process to do the job. */
-    char ** array = arg_parse(line);
     cpid = fork();
     if (cpid < 0) {
       perror ("fork");
@@ -73,7 +121,7 @@ void processline (char *line)
     /* Check for who we are! */
     if (cpid == 0) {
       /* We are the child! */
-      execlp (line, line, (char *)0);
+      execvp (line, argv);
       perror ("exec");
       exit (127);
     }
@@ -82,13 +130,3 @@ void processline (char *line)
     if (wait (&status) < 0)
       perror ("wait");
 }
-char ** arg_parse(char *line){
-  int i = 0;
-  int argc = 0;
-  while (line[i] != NULL){
-    if (line[i] != " "){
-      argc++;
-      while (line[i] != " "){
-	i++;
-      }
-    }
