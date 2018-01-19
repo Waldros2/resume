@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class CrazyDay{
 	
@@ -16,7 +17,10 @@ public class CrazyDay{
 				File file = new File(args[0]);
 				Scanner sc = new Scanner(file);
 				while(sc.hasNextLine()){
-					System.out.println(sc.nextLine());
+					StringTokenizer str = new StringTokenizer(sc.nextLine());
+					for(int i = 0; i < 7; i++){
+						System.out.println(str.nextToken());
+					}
 				}
 				sc.close();
 			}  catch (Exception ex){
