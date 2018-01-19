@@ -1,18 +1,28 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-class CrazyDay{
+public class CrazyDay{
 	
 	public static void main(String[] args){
 		if(args.length == 0){
 			System.out.println("CrazyDay usage: java CrazyDay <inputfile.txt>");
 		}
 		else{
+			
 			Record record;
 			record = new Record();
-			File file = 
+			try{
+				File file = new File(args[0]);
+				Scanner sc = new Scanner(file);
+				while(sc.hasNextLine()){
+					System.out.println(sc.nextLine());
+				}
+				sc.close();
+			}  catch (Exception ex){
+				ex.printStackTrace();
+			}
 		}
-	
 	}
 
 	private static class Record{
